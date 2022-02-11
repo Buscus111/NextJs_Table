@@ -1,34 +1,42 @@
-import { useEffect } from 'react'
-import Router from 'next/router'
-
+import Head from 'next/head'
 import type { NextPage, GetServerSideProps } from 'next'
+import { getSession } from "next-auth/react"
 
-import TableComponent from '../components/Table'
-import styles from '../styles/Home.module.css'
+import type { TableDataProps } from '../types/table'
+import HomeComponent from '../components/Home'
 
-type Props = {
-  data: any,
-}
 
-const Home: NextPage<Props> = ({data}) => {
-  console.log(data, 'helllo')
+type Props = TableDataProps
 
-  useEffect(() => {
-    if (false) {
-      Router.push('./login')
-    }
-  })
+const Home: NextPage<Props> = ({ data }) => {
   return (
-    <div className={styles.container}>
-      <TableComponent/>
-    </div>)
+    <>
+      <Head>
+        <title>Here2</title>
+        <meta name="description" content="Development version 1.0" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+      <HomeComponent data={data} />
+    </>
+  )
 }
 
-export const getServerSideProps: GetServerSideProps = async () => {
-  // const res = await fetch('http://localhost:3000/api/hello')
-  // const data = await res.json()
-  const data = {name: 'Joe'}
-  return { props: { data } }
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const session = await getSession(context)
+  if (!session) {
+    return {
+      redirect: {
+        destination: '/login',
+        permanent: false,
+      },
+    }
+  } else {
+      const res = await fetch('http://localhost:3000/fakeData.json')
+      const data = await res.json()
+      return {
+        props: { session, data }
+      }
+  }
 }
 
 export default Home

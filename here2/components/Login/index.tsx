@@ -1,21 +1,11 @@
-import { useState } from 'react'
-
+import { Button, FlexboxGrid } from 'rsuite'
+import { signIn } from "next-auth/react"
 import styles from './styles.module.css'
 
-
-const Login = ({onClick}: {onClick: () => void}) => {
-  const [verify, setVerify] = useState(false)
-
+export default function Login() {
   return (
-    <div className={styles.container}>
-        <form>
-            <input type="text" />
-            <input type="text" />
-        </form>
-        <button onClick={onClick}>Submit</button>
-        {/* <button>Cancel</button> */}
-    </div>
+      <FlexboxGrid className={styles.container} justify="center" align="middle">
+          <Button onClick={() => signIn("google")} appearance="primary">Login with Google</Button>
+      </FlexboxGrid>
   )
 }
-
-export default Login
